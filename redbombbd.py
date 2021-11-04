@@ -60,7 +60,7 @@ logo=(green+"""
 
 
 line=(yellow+"======================================================")
-tversion=(cyan+"\t\t Version : 1.0.1 ")
+tversion=(cyan+"\t\t       Version : 1.0.1 ")
 
 line2=("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~")
  
