@@ -66,8 +66,7 @@ line2=("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~")
  
 dtls=(yellow+"\t\tCreated By: Redwiat ")
 
-note=(red+"Note: I wont be responsible fo any illigal activites.")
-note=(cyan+"Note: This Google tool is for use in Bangladesh only. Use our worldwide version for worldwide use.")
+note=(cyan+"Note: I wont be responsible fo any illigal activites. >> This Google tool is for use in Bangladesh only. Use our worldwide version for worldwide use.")
 
 print(logo)
 
