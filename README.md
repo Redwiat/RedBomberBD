@@ -17,7 +17,7 @@ apt-get update
 pkg install python -y
 pkg install git -y
 git clone https://github.com/Redwiat/RedBomberBD.git
-cd ROH-Bomber
+cd RedBomberBD
 pip install requests 
 python roh.py
 ```
