@@ -139,6 +139,6 @@ for i in range (amount):
 	print(str(i+1)+green+'.	➙SMS Sent 😈✅')
 	
 print('					')
-print(cyan+'\t\tThanks For Using RedBomber Bangladesh By RedHunter Team')
+print(cyan+'\t\tThanks For Using RedBomber Bangladesh By Redwiat - RedHunter Team')
 
 
