@@ -19,7 +19,7 @@ pkg install git -y
 git clone https://github.com/Redwiat/RedBomberBD.git
 cd RedBomberBD
 pip install requests 
-python roh.py
+python redbomb.py
 ```
 
 
