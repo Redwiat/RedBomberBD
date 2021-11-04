@@ -64,7 +64,7 @@ tversion=(cyan+"\t\t     Version : 1.0.1 ")
 
 line2=("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~")
  
-dtls=(yellow+"\t\t𝐂𝐫𝐞𝐚𝐭𝐞𝐝 𝐁𝐲: Redwiat ")
+dtls=(yellow+"\t\tCreated By: Redwiat ")
 
 note=(red+"Note: I wont be responsible fo any illigal activites.")
 
