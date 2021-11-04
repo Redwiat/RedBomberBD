@@ -60,11 +60,11 @@ logo=(green+"""
 
 
 line=(yellow+"======================================================")
-tversion=(cyan+"\t\t     Version : 1.0.1 ")
+tversion=(cyan+"\t\t Version : 1.0.1 ")
 
 line2=("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~")
  
-dtls=(yellow+"\t\tCreated By: Redwiat ")
+dtls=(yellow+"\t\t Created By: Redwiat ")
 
 note=(cyan+"Note: I wont be responsible fo any illigal activites. >> This Google tool is for use in Bangladesh only. Use our worldwide version for worldwide use.")
 
