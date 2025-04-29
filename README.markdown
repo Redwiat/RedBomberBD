@@ -34,7 +34,7 @@ python redbombbd.py
    ```bash
    python redbombbd.py
    ```
-2. Enter a valid Bangladesh phone number (e.g., `+8801712345678` or `01712345678`).
+2. Enter a valid Bangladesh phone number (e.g., `+8801700000000` or `01700000000`).
 3. Specify the number of OTP requests (e.g., 1–5 to avoid API rate limits).
 4. Check the output for success (`SMS Sent ✅`) or error messages.
 
@@ -56,7 +56,7 @@ python redbombbd.py
 ## License
 RedBomberBD is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Contributing
 Contributions are welcome to enhance RedBomberBD! To contribute:
